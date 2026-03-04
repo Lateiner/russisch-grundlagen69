@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Russisch Übung: Kategorisierung ЧТО vs. ЧТОБЫ</title>
+    <!-- Polyfill für Drag & Drop auf Touch-Geräten -->
+    <script src="https://cdn.jsdelivr.net/npm/drag-drop-touch@1.3.1/DragDropTouch.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-bg: #d4edda;
+            --success-border: #28a745;
+            --error-bg: #f8d7da;
+            --error-border: #dc3545;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1, h2 { text-align: center; }
+
+        .description {
+            background: #eef6fc;
+            padding: 15px;
+            border-left: 5px solid var(--secondary-color);
+            margin-bottom: 25px;
+            border-radius: 4px;
+        }
+
+        /* Drag Bereich */
+        .items-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            padding: 15px;
+            background: #f9f9f9;
+            border: 1px dashed #ccc;
+            border-radius: 8px;
+            min-height: 100px;
+            margin-bottom: 30px;
+        }
+
+        .drag-item {
+            padding: 10px 15px;
+            background: var(--secondary-color);
+            color: white;
+            border-radius: 6px;
+            cursor: grab;
+            user-select: none;
+            font-size: 0.95rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        .drag-item:active { cursor: grabbing; }
+        .drag-item.dragging { opacity: 0.5; }
+
+        /* Drop Zonen */
+        .drop-zones-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .drop-box {
+            border: 3px dashed #bdc3c7;
+            border-radius: 10px;
+            padding: 15px;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        .drop-box h3 {
+            margin-top: 0;
+            font-size: 1.1rem;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .drop-box.over {
+            background: #ecf0f1;
+            border-color: var(--secondary-color);
+        }
+
+        /* Status-Farben im Drop */
+        .drag-item.correct-drop {
+            background-color: var(--success-border) !important;
+            border: 2px solid #1e7e34;
+        }
+
+        .drag-item.wrong-drop {
+            background-color: var(--error-border) !important;
+            border: 2px solid #bd2130;
+        }
+
+        /* Buttons */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: opacity 0.2s;
+        }
+
+        .btn-reset { background: #95a5a6; color: white; }
+        .btn-solution { background: #f39c12; color: white; }
+        button:hover { opacity: 0.8; }
+
+        @media (max-width: 650px) {
+            .drop-zones-container { grid-template-columns: 1fr; }
+            .drop-box { min-height: 180px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Russische Grammatik</h1>
+    <h2>Aufgabe 1: Kategorisierung (Drag & Drop)</h2>
+    
+    <div class="description">
+        Ordne die Sätze der richtigen Kategorie zu. Überlege: Handelt es sich um einen <b>Fakt/Information (ЧТО)</b> oder um ein <b>Ziel/Wunsch (ЧТОБЫ)</b>?
+    </div>
+
+    <div class="items-container" id="items-pool">
+        <!-- Sätze -->
+        <div class="drag-item" draggable="true" data-type="что" id="i1">Я знаю, что он дома.</div>
+        <div class="drag-item" draggable="true" data-type="чтобы" id="i2">Я хочу, чтобы ты ушла.</div>
+        <div class="drag-item" draggable="true" data-type="чтобы" id="i3">Друзья пришли, чтобы я помог им.</div>
+        <div class="drag-item" draggable="true" data-type="что" id="i4">Нина думает, что я прав.</div>
+        <div class="drag-item" draggable="true" data-type="чтобы" id="i5">Дай мне нож, чтобы порезать хлеб.</div>
+        <div class="drag-item" draggable="true" data-type="что" id="i6">Она сказала, dass придёт.</div>
+        <div class="drag-item" draggable="true" data-type="что" id="i7">Вы видели, что случилось?</div>
+        <div class="drag-item" draggable="true" data-type="чтобы" id="i8">Мы требовали, чтобы они не шумели.</div>
+        <div class="drag-item" draggable="true" data-type="чтобы" id="i9">Я учу русский, чтобы работать в РФ.</div>
+        <div class="drag-item" draggable="true" data-type="что" id="i10">Нам кажется, что будет дождь.</div>
+    </div>
+
+    <div class="drop-zones-container">
+        <div class="drop-box" id="box-что" data-expected="что">
+            <h3>ЧТО<br><small>(Fakten / Info)</small></h3>
+        </div>
+        <div class="drop-box" id="box-чтобы" data-expected="чтобы">
+            <h3>ЧТОБЫ<br><small>(Ziel / Wunsch)</small></h3>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="btn-reset" onclick="resetExercise()">Zurücksetzen</button>
+        <button class="btn-solution" onclick="showSolution()">Lösung anzeigen</button>
+    </div>
+</div>
+
+<script>
+    const items = document.querySelectorAll('.drag-item');
+    const boxes = document.querySelectorAll('.drop-box');
+    const pool = document.getElementById('items-pool');
+
+    items.forEach(item => {
+        item.addEventListener('dragstart', dragStart);
+        item.addEventListener('dragend', dragEnd);
+    });
+
+    boxes.forEach(box => {
+        box.addEventListener('dragover', dragOver);
+        box.addEventListener('dragenter', dragEnter);
+        box.addEventListener('dragleave', dragLeave);
+        box.addEventListener('drop', dragDrop);
+    });
+
+    function dragStart(e) {
+        e.dataTransfer.setData('text/plain', e.target.id);
+        setTimeout(() => this.classList.add('dragging'), 0);
+    }
+
+    function dragEnd() {
+        this.classList.remove('dragging');
+    }
+
+    function dragOver(e) { e.preventDefault(); }
+    function dragEnter(e) { e.preventDefault(); this.classList.add('over'); }
+    function dragLeave() { this.classList.remove('over'); }
+
+    function dragDrop(e) {
+        this.classList.remove('over');
+        const id = e.dataTransfer.getData('text/plain');
+        const draggable = document.getElementById(id);
+        
+        // Validierung
+        const itemType = draggable.getAttribute('data-type');
+        const boxType = this.getAttribute('data-expected');
+
+        if (itemType === boxType) {
+            draggable.classList.add('correct-drop');
+            draggable.classList.remove('wrong-drop');
+        } else {
+            draggable.classList.add('wrong-drop');
+            draggable.classList.remove('correct-drop');
+        }
+
+        this.appendChild(draggable);
+    }
+
+    function resetExercise() {
+        items.forEach(item => {
+            item.classList.remove('correct-drop', 'wrong-drop');
+            pool.appendChild(item);
+        });
+        // Mischen
+        for (let i = pool.children.length; i >= 0; i--) {
+            pool.appendChild(pool.children[Math.random() * i | 0]);
+        }
+    }
+
+    function showSolution() {
+        items.forEach(item => {
+            const type = item.getAttribute('data-type');
+            const targetBox = document.getElementById('box-' + type);
+            item.classList.remove('wrong-drop');
+            item.classList.add('correct-drop');
+            targetBox.appendChild(item);
+        });
+    }
+</script>
+
+</body>
+</html>
