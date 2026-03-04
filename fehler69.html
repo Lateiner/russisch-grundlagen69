@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Click-to-Fix: 10 Fehler finden</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --error-color: #e74c3c;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .explanation {
+            background: #eef6fc;
+            padding: 20px;
+            border-left: 5px solid var(--secondary-color);
+            border-radius: 4px;
+            margin-bottom: 25px;
+        }
+
+        .text-area {
+            font-size: 1.15rem;
+            line-height: 2.2;
+            background: #fff;
+            padding: 25px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: justify;
+        }
+
+        .word-wrap {
+            position: relative;
+            display: inline-block;
+        }
+
+        .editable-word {
+            display: inline-block;
+            cursor: pointer;
+            border-bottom: 2px dashed var(--secondary-color);
+            padding: 0 4px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        .editable-word:hover {
+            background-color: #ebf5fb;
+            color: var(--secondary-color);
+        }
+
+        .inline-select {
+            display: none;
+            font-size: 1rem;
+            padding: 2px;
+            border: 2px solid var(--secondary-color);
+            border-radius: 4px;
+            background: white;
+            outline: none;
+            color: var(--primary-color);
+        }
+
+        .correct {
+            border-bottom: 2px solid var(--success-color);
+            color: var(--success-color) !important;
+            background-color: #d4edda;
+        }
+
+        .incorrect {
+            border-bottom: 2px solid var(--error-color);
+            color: var(--error-color) !important;
+            background-color: #f8d7da;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        button.action-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            transition: opacity 0.2s;
+        }
+
+        .btn-reset { background: #95a5a6; }
+        .btn-solution { background: #f39c12; }
+
+        @media (max-width: 600px) {
+            .container { padding: 15px; }
+            .text-area { font-size: 1.05rem; padding: 15px; line-height: 2.5; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Russische Grammatik</h1>
+    <h2>Aufgabe 5: Fehlersuche (10 Korrekturen)</h2>
+    
+    <div class="explanation">
+        Klicke auf die unterstrichenen Wörter im Text. Es haben sich <b>10 Fehler</b> eingeschlichen (falsche Konjunktionen oder falsche Verbformen). Wähle jeweils die richtige Form aus!
+    </div>
+
+    <div class="text-area">
+        Привет! Я знаю, 
+        <span class="word-wrap" data-correct="что">
+            <span class="editable-word" onclick="showMenu(this)">чтобы</span>
+            <select class="inline-select" onchange="validate(this)">
+                <option value="чтобы">чтобы</option>
+                <option value="что">что</option>
+            </select>
+        </span>
+        ты сейчас учишься. Ты пришёл в библиотеку, 
+        <span class="word-wrap" data-correct="чтобы">
+            <span class="editable-word" onclick="showMenu(this)">что</span>
+            <select class="inline-select" onchange="validate(this)">
+                <option value="что">что</option>
+                <option value="чтобы">чтобы</option>
+            </select>
+        </span>
+        заниматься. Мой учитель хочет, чтобы мы сегодня 
+        <span class="word-wrap" data-correct="выучили">
+            <span class="editable-word" onclick="showMenu(this)">выучить</span>
+            <select class="inline-select" onchange="validate(this)">
+                <option value="выучить">выучить</option>
+                <option value="выучили">выучили</option>
+                <option value="выучим">выучим</option>
+            </select>
+        </span>
+        все правила. Я тоже много читаю, 
+        <span class="word-wrap" data-correct="чтобы">
+            <span class="editable-word" onclick="showMenu(this)">что</span>
+            <select class="inline-select" onchange="validate(this)">
+                <option value="что">что</option>
+                <option value="чтобы">чтобы</option>
+            </select>
+        </span>
+        хорошо говорить по-русски. Мама просит, чтобы я завтра 
+        <span class="word-wrap" data-correct="купил">
+            <span class="editable-word" onclick="showMenu(this)">куплю</span>
+            <select class="inline-select" onchange="validate(this)">
+                <option value="куплю">куплю</option>
+                <option value="купить">купить</option>
+                <option value="купил">купил</option>
+            </select>
+        </span>
+        фрукты. Она видела в новостях, 
+        <span class="word-wrap" data-correct="что">
+            <span class="editable-word" onclick="showMenu(this)">чтобы</span>
+            <select class="inline-select" onchange="validate(this)">
+                <option value="чтобы">чтобы</option>
+                <option value="что">что</option>
+            </select>
+        </span>
+        цены в магазине сейчас низкие. Мой папа мечтает, чтобы моя сестра 
+        <span class="word-wrap" data-correct="получила">
+            <span class="editable-word" onclick="showMenu(this)">получил</span>
+            <select class="inline-select" onchange="validate(this)">
+                <option value="получил">получил</option>
+                <option value="получила">получила</option>
+                <option value="получить">получить</option>
+            </select>
+        </span>
+        хорошую оценку. Я закрою дверь, 
+        <span class="word-wrap" data-correct="чтобы">
+            <span class="editable-word" onclick="showMenu(this)">что</span>
+            <select class="inline-select" onchange="validate(this)">
+                <option value="что">что</option>
+                <option value="чтобы">чтобы</option>
+            </select>
+        </span>
+        никто нам не мешал. Нина сказала, 
+        <span class="word-wrap" data-correct="что">
+            <span class="editable-word" onclick="showMenu(this)">чтобы</span>
+            <select class="inline-select" onchange="validate(this)">
+                <option value="чтобы">чтобы</option>
+                <option value="что">что</option>
+            </select>
+        </span>
+        она уже сделала все уроки. Мы очень просим, чтобы вы нам сейчас 
+        <span class="word-wrap" data-correct="помогли">
+            <span class="editable-word" onclick="showMenu(this)">помогают</span>
+            <select class="inline-select" onchange="validate(this)">
+                <option value="помогают">помогают</option>
+                <option value="помочь">помочь</option>
+                <option value="помогли">помогли</option>
+            </select>
+        </span>.
+    </div>
+
+    <div class="controls">
+        <button class="action-btn btn-reset" onclick="resetExercise()">Zurücksetzen</button>
+        <button class="action-btn btn-solution" onclick="showSolution()">Lösung anzeigen</button>
+    </div>
+</div>
+
+<script>
+    function showMenu(spanElement) {
+        const wrap = spanElement.parentElement;
+        const select = wrap.querySelector('.inline-select');
+        
+        spanElement.style.display = 'none';
+        select.style.display = 'inline-block';
+        select.focus();
+    }
+
+    function validate(selectElement) {
+        const wrap = selectElement.parentElement;
+        const span = wrap.querySelector('.editable-word');
+        const correctValue = wrap.getAttribute('data-correct');
+        
+        const selectedValue = selectElement.value;
+        span.innerText = selectedValue;
+        
+        selectElement.style.display = 'none';
+        span.style.display = 'inline-block';
+
+        if (selectedValue === correctValue) {
+            span.className = 'editable-word correct';
+        } else {
+            span.className = 'editable-word incorrect';
+        }
+    }
+
+    function resetExercise() {
+        const wraps = document.querySelectorAll('.word-wrap');
+        wraps.forEach(wrap => {
+            const span = wrap.querySelector('.editable-word');
+            const select = wrap.querySelector('.inline-select');
+            
+            const initialValue = select.options[0].value;
+            span.innerText = initialValue;
+            select.value = initialValue;
+            
+            span.className = 'editable-word';
+            span.style.display = 'inline-block';
+            select.style.display = 'none';
+        });
+    }
+
+    function showSolution() {
+        const wraps = document.querySelectorAll('.word-wrap');
+        wraps.forEach(wrap => {
+            const span = wrap.querySelector('.editable-word');
+            const select = wrap.querySelector('.inline-select');
+            const correctValue = wrap.getAttribute('data-correct');
+            
+            span.innerText = correctValue;
+            select.value = correctValue;
+            
+            span.className = 'editable-word correct';
+            span.style.display = 'inline-block';
+            select.style.display = 'none';
+        });
+    }
+</script>
+
+</body>
+</html>
