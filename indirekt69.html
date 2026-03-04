@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transformation: Indirekte Rede mit ЧТОБЫ</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --error-color: #e74c3c;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .explanation {
+            background: #eef6fc;
+            padding: 20px;
+            border-left: 5px solid var(--secondary-color);
+            border-radius: 4px;
+            margin-bottom: 30px;
+        }
+
+        .task-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .direct-speech {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .indirect-speech-builder {
+            font-size: 1.05rem;
+            line-height: 2.5;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+
+        select {
+            padding: 6px 10px;
+            font-size: 1rem;
+            border: 2px solid #bdc3c7;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        select.correct {
+            border-color: var(--success-color);
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        select.incorrect {
+            border-color: var(--error-color);
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        button.action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            transition: opacity 0.2s;
+        }
+
+        .btn-reset { background: #95a5a6; }
+        .btn-solution { background: #f39c12; }
+
+        @media (max-width: 600px) {
+            .container { padding: 15px; }
+            .indirect-speech-builder { font-size: 1rem; line-height: 3; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Russische Grammatik</h1>
+    <h2>Aufgabe 6: Indirekte Rede bilden (Transformation)</h2>
+    
+    <div class="explanation">
+        <strong>Regel:</strong> Um eine Aufforderung (Imperativ) in die indirekte Rede zu setzen, nutzen wir <b>чтобы</b> + <b>Präteritum</b>. 
+        Wähle die richtigen Bausteine aus, um den Satz zu vervollständigen.
+    </div>
+
+    <div id="tasks-container">
+        <!-- Aufgaben werden per JS generiert -->
+    </div>
+</div>
+
+<script>
+    const tasks = [
+        {
+            direct: "„Иди домой!“ (Geh nach Hause!)",
+            intro: "Мама сказала, ",
+            dropdowns: [
+                { options: ["что", "чтобы"], correct: "чтобы" },
+                { text: " я " },
+                { options: ["иду", "шёл", "шла"], correct: "шёл" }
+            ],
+            end: " домой."
+        },
+        {
+            direct: "„Купите молоко!“ (Kauft Milch!)",
+            intro: "Папа попросил, ",
+            dropdowns: [
+                { options: ["что", "чтобы"], correct: "чтобы" },
+                { text: " мы " },
+                { options: ["купили", "купим", "купить"], correct: "купили" }
+            ],
+            end: " молоко."
+        },
+        {
+            direct: "„Не шумите!“ (Macht keinen Lärm!)",
+            intro: "Учитель сказал, ",
+            dropdowns: [
+                { options: ["что", "чтобы"], correct: "чтобы" },
+                { text: " они " },
+                { options: ["не шумят", "не шумели", "не шуметь"], correct: "не шумели" }
+            ],
+            end: "."
+        },
+        {
+            direct: "„Позвони мне!“ (Ruf mich an!)",
+            intro: "Нина хочет, ",
+            dropdowns: [
+                { options: ["что", "чтобы"], correct: "чтобы" },
+                { text: " я " },
+                { options: ["позвонил", "позвоню", "позвонила"], correct: "позвонил" }
+            ],
+            end: " ей."
+        },
+        {
+            direct: "„Приходи вовремя!“ (Komm pünktlich!)",
+            intro: "Друг попросил, ",
+            dropdowns: [
+                { options: ["что", "чтобы"], correct: "чтобы" },
+                { text: " ты " },
+                { options: ["пришёл", "приходишь", "прийти"], correct: "пришёл" }
+            ],
+            end: " вовремя."
+        },
+        {
+            direct: "„Прочитай книгу!“ (Lies das Buch!)",
+            intro: "Преподаватель хочет, ",
+            dropdowns: [
+                { options: ["что", "чтобы"], correct: "чтобы" },
+                { text: " ты " },
+                { options: ["прочитаешь", "прочитал", "прочитала"], correct: "прочитал" }
+            ],
+            end: " книгу."
+        },
+        {
+            direct: "„Помогите мне!“ (Helfen Sie mir!)",
+            intro: "Соседка попросила, ",
+            dropdowns: [
+                { options: ["что", "чтобы"], correct: "чтобы" },
+                { text: " мы " },
+                { options: ["поможем", "помогли", "помочь"], correct: "помогли" }
+            ],
+            end: " ей."
+        },
+        {
+            direct: "„Будь осторожен!“ (Sei vorsichtig!)",
+            intro: "Мама сказала сыну, ",
+            dropdowns: [
+                { options: ["что", "чтобы"], correct: "чтобы" },
+                { text: " он " },
+                { options: ["был", "будет", "быть"], correct: "был" }
+            ],
+            end: " осторожен."
+        },
+        {
+            direct: "„Открой окно!“ (Öffne das Fenster!)",
+            intro: "Коллега попросил, ",
+            dropdowns: [
+                { options: ["что", "чтобы"], correct: "чтобы" },
+                { text: " я " },
+                { options: ["открою", "открыл", "открыла"], correct: "открыл" }
+            ],
+            end: " окно."
+        },
+        {
+            direct: "„Ешьте суп!“ (Esst die Suppe!)",
+            intro: "Бабушка сказала детям, ",
+            dropdowns: [
+                { options: ["что", "чтобы"], correct: "чтобы" },
+                { text: " они " },
+                { options: ["едят", "ели", "съесть"], correct: "ели" }
+            ],
+            end: " суп."
+        }
+    ];
+
+    const container = document.getElementById('tasks-container');
+
+    tasks.forEach((task, tIdx) => {
+        const card = document.createElement('div');
+        card.className = 'task-card';
+
+        let builderHTML = `<span class="direct-speech">${task.direct}</span>`;
+        builderHTML += `<div class="indirect-speech-builder"><span>${task.intro}</span>`;
+
+        task.dropdowns.forEach((item, dIdx) => {
+            if (item.options) {
+                builderHTML += `
+                    <select onchange="validate(this, '${item.correct}')" data-correct="${item.correct}">
+                        <option value="">--?--</option>
+                        ${item.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+                    </select>
+                `;
+            } else {
+                builderHTML += `<span>${item.text}</span>`;
+            }
+        });
+
+        builderHTML += `<span>${task.end}</span></div>`;
+        builderHTML += `
+            <div class="btn-group">
+                <button class="action-btn btn-reset" onclick="resetTask(this)">Zurücksetzen</button>
+                <button class="action-btn btn-solution" onclick="showSolution(this)">Lösung anzeigen</button>
+            </div>
+        `;
+
+        card.innerHTML = builderHTML;
+        container.appendChild(card);
+    });
+
+    function validate(select, correct) {
+        if (select.value === "") {
+            select.className = "";
+            return;
+        }
+        if (select.value === correct) {
+            select.className = "correct";
+        } else {
+            select.className = "incorrect";
+        }
+    }
+
+    function resetTask(btn) {
+        const selects = btn.closest('.task-card').querySelectorAll('select');
+        selects.forEach(s => {
+            s.value = "";
+            s.className = "";
+        });
+    }
+
+    function showSolution(btn) {
+        const selects = btn.closest('.task-card').querySelectorAll('select');
+        selects.forEach(s => {
+            const correct = s.getAttribute('data-correct');
+            s.value = correct;
+            s.className = "correct";
+        });
+    }
+</script>
+
+</body>
+</html>
