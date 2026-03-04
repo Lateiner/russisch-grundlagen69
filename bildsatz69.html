@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bild-Satz-Zuordnung: ЧТО vs. ЧТОБЫ</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --error-color: #e74c3c;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .explanation {
+            background: #eef6fc;
+            padding: 20px;
+            border-left: 5px solid var(--secondary-color);
+            border-radius: 4px;
+            margin-bottom: 30px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s;
+        }
+
+        .visual {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            background: #f9f9f9;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .context-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border: 2px solid #bdc3c7;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            margin-top: 15px;
+            outline: none;
+        }
+
+        select.correct {
+            border-color: var(--success-color);
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        select.incorrect {
+            border-color: var(--error-color);
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        button.action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            transition: opacity 0.2s;
+        }
+
+        .btn-reset { background: #95a5a6; }
+        .btn-solution { background: #f39c12; }
+
+        @media (max-width: 600px) {
+            .container { padding: 15px; }
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Russische Grammatik</h1>
+    <h2>Aufgabe 7: Bild-Satz-Zuordnung</h2>
+    
+    <div class="explanation">
+        Schau dir das Icon an: Zeigt es eine <b>reale Situation/Information</b> (Fakt) oder eine <b>Gedankenblase/Absicht</b> (Wunsch/Ziel)? 
+        Wähle die passende Konjunktion aus.
+    </div>
+
+    <div class="grid" id="task-grid">
+        <!-- Aufgaben werden per JS geladen -->
+    </div>
+</div>
+
+<script>
+    const tasks = [
+        {
+            icon: "📱",
+            label: "Info/Nachrichten",
+            q: "Я знаю, ... это правда.",
+            a: "что"
+        },
+        {
+            icon: "💭☀️",
+            label: "Wunsch/Traum",
+            q: "Я хочу, ... наступило лето.",
+            a: "чтобы"
+        },
+        {
+            icon: "🎓",
+            label: "Ziel/Absicht",
+            q: "Она учится, ... поступить в университет.",
+            a: "чтобы"
+        },
+        {
+            icon: "🗣️",
+            label: "Information",
+            q: "Он сказал, ... он занят.",
+            a: "что"
+        },
+        {
+            icon: "🍕",
+            label: "Zweck/Absicht",
+            q: "Мама купила пиццу, ... мы поужинали.",
+            a: "чтобы"
+        },
+        {
+            icon: "🏠💡",
+            label: "Beobachtung/Fakt",
+            q: "Вы видели, ... свет горит?",
+            a: "что"
+        },
+        {
+            icon: "✉️✍️",
+            label: "Bitte/Wunsch",
+            q: "Я попрошу, ... ты написал письмо.",
+            a: "чтобы"
+        },
+        {
+            icon: "❄️",
+            label: "Vermutung/Fakt",
+            q: "Нам кажется, ... будет снег.",
+            a: "что"
+        },
+        {
+            icon: "🔑",
+            label: "Zweck",
+            q: "Дай мне ключ, ... открыть дверь.",
+            a: "чтобы"
+        },
+        {
+            icon: "💼",
+            label: "Wissen/Meinung",
+            q: "Нина думает, ... я на работе.",
+            a: "что"
+        }
+    ];
+
+    const grid = document.getElementById('task-grid');
+
+    tasks.forEach((task, index) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        const parts = task.q.split('...');
+        
+        card.innerHTML = `
+            <div>
+                <div class="context-label">${task.label}</div>
+                <div class="visual">${task.icon}</div>
+                <div class="sentence-text">
+                    ${parts[0]}
+                    <select onchange="validate(this, '${task.a}')" data-correct="${task.a}">
+                        <option value="">--?--</option>
+                        <option value="что">что</option>
+                        <option value="чтобы">чтобы</option>
+                    </select>
+                    ${parts[1]}
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="action-btn btn-reset" onclick="resetTask(this)">Reset</button>
+                <button class="action-btn btn-solution" onclick="showSolution(this)">Lösung</button>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+
+    function validate(select, correct) {
+        if (select.value === "") {
+            select.className = "";
+            return;
+        }
+        if (select.value === correct) {
+            select.className = "correct";
+        } else {
+            select.className = "incorrect";
+        }
+    }
+
+    function resetTask(btn) {
+        const select = btn.closest('.card').querySelector('select');
+        select.value = "";
+        select.className = "";
+    }
+
+    function showSolution(btn) {
+        const select = btn.closest('.card').querySelector('select');
+        const correct = select.getAttribute('data-correct');
+        select.value = correct;
+        select.className = "correct";
+    }
+</script>
+
+</body>
+</html>
