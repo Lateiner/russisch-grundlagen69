@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio-Reaktionstest: ЧТО vs. ЧТОБЫ (Zufallsmodus)</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --error-color: #e74c3c;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .explanation {
+            background: #eef6fc;
+            padding: 20px;
+            border-left: 5px solid var(--secondary-color);
+            border-radius: 4px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .game-box {
+            background: #fff;
+            border: 2px solid #ddd;
+            border-radius: 15px;
+            padding: 40px 20px;
+            margin-bottom: 20px;
+            position: relative;
+            min-height: 320px;
+        }
+
+        .audio-icon {
+            font-size: 5rem;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: inline-block;
+            transition: transform 0.2s;
+            user-select: none;
+        }
+
+        .audio-icon:hover { transform: scale(1.1); }
+        .audio-icon.playing { animation: pulse 1s infinite; color: var(--secondary-color); }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .response-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .resp-btn {
+            padding: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: 3px solid #bdc3c7;
+            border-radius: 10px;
+            cursor: pointer;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .resp-btn:hover:not(:disabled) { background: #f0f7fd; border-color: var(--secondary-color); }
+        .resp-btn:disabled { opacity: 0.5; cursor: default; }
+
+        .fakt-btn { color: #2c3e50; }
+        .absicht-btn { color: #2980b9; }
+
+        .status-msg {
+            margin-top: 20px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            min-height: 1.5em;
+        }
+
+        .score-board {
+            font-size: 1rem;
+            margin-top: 15px;
+            color: #7f8c8d;
+        }
+
+        .start-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255,255,255,0.96);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            z-index: 10;
+        }
+
+        .btn-main {
+            padding: 15px 40px;
+            font-size: 1.3rem;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .summary {
+            display: none;
+            text-align: left;
+            margin-top: 30px;
+            border-top: 2px solid #eee;
+            padding-top: 20px;
+        }
+
+        .summary table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .summary td { padding: 10px; border-bottom: 1px solid #eee; font-size: 0.95rem; }
+
+        @media (max-width: 600px) {
+            .response-buttons { grid-template-columns: 1fr; gap: 10px; }
+            .container { padding: 15px; }
+            .audio-icon { font-size: 4rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Russische Grammatik</h1>
+    <h2>Aufgabe 9: Audio-Reaktionstest (Zufallsmodus)</h2>
+    
+    <div class="explanation">
+        <strong>Hörverstehen:</strong> Klicke auf den Lautsprecher. Wurde ein Fakt (<b>ЧТО</b>) oder eine Absicht/Wunsch (<b>ЧТОБЫ</b>) geäußert?
+        <br><small><i>Die Reihenfolge wird bei jedem Start neu gemischt. Männliche Stimme wird bevorzugt.</i></small>
+    </div>
+
+    <div class="game-box">
+        <div class="start-overlay" id="start-screen">
+            <button class="btn-main" onclick="startGame()">Mischen & Starten</button>
+        </div>
+
+        <div id="audio-trigger" class="audio-icon" onclick="playCurrent()">🔊</div>
+        <div class="status-msg" id="feedback">Bereit?</div>
+        
+        <div class="response-buttons">
+            <button class="resp-btn fakt-btn" id="btn-fakt" onclick="handleInput('fakt')" disabled>Fakt<br>(ЧТО)</button>
+            <button class="resp-btn absicht-btn" id="btn-absicht" onclick="handleInput('absicht')" disabled>Absicht<br>(ЧТОБЫ)</button>
+        </div>
+
+        <div class="score-board" id="score">Satz 0 / 10</div>
+    </div>
+
+    <div class="summary" id="summary-block">
+        <h3>Dein Ergebnis:</h3>
+        <table id="summary-table"></table>
+        <button class="btn-main" style="background:#95a5a6; margin-top:20px; width:100%;" onclick="resetGame()">Neu mischen & Neustart</button>
+    </div>
+</div>
+
+<script>
+    const baseSentences = [
+        { text: "Я знаю, что он дома.", cat: "fakt", trans: "Ich weiß, dass er zu Hause ist." },
+        { text: "Я хочу, чтобы ты пришёл.", cat: "absicht", trans: "Ich will, dass du kommst." },
+        { text: "Она сказала, что уже поздно.", cat: "fakt", trans: "Sie sagte, dass es schon spät ist." },
+        { text: "Мы здесь, чтобы работать.", cat: "absicht", trans: "Wir sind hier, um zu arbeiten." },
+        { text: "Нина думает, что ты прав.", cat: "fakt", trans: "Nina denkt, dass du recht hast." },
+        { text: "Дай мне нож, чтобы я порезал хлеб.", cat: "absicht", trans: "Gib mir das Messer, damit ich das Brot schneide." },
+        { text: "Вы слышали, что праздник отменили?", cat: "fakt", trans: "Habt ihr gehört, dass das Fest abgesagt wurde?" },
+        { text: "Мама просит, чтобы я помыл посуду.", cat: "absicht", trans: "Mama bittet darum, dass ich abwasche." },
+        { text: "Нам кажется, что будет дождь.", cat: "fakt", trans: "Uns scheint, dass es regnen wird." },
+        { text: "Я пришёл, чтобы помочь тебе.", cat: "absicht", trans: "Ich bin gekommen, um dir zu helfen." }
+    ];
+
+    let currentSentences = [];
+    let currentIdx = 0;
+    let score = 0;
+    let isPlaying = false;
+    let synth = window.speechSynthesis;
+    let maleRussianVoice = null;
+
+    // Fisher-Yates Shuffle Algorithmus
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    function loadVoices() {
+        let voices = synth.getVoices();
+        const maleNames = ['Pavel', 'Maxim', 'Yuri', 'Aleksandr', 'Stefan'];
+        maleRussianVoice = voices.find(v => 
+            v.lang.startsWith('ru') && maleNames.some(name => v.name.includes(name))
+        ) || voices.find(v => v.lang.startsWith('ru'));
+    }
+
+    loadVoices();
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+        speechSynthesis.onvoiceschanged = loadVoices;
+    }
+
+    function startGame() {
+        document.getElementById('start-screen').style.display = 'none';
+        document.getElementById('summary-block').style.display = 'none';
+        
+        // Sätze für diese Runde neu mischen
+        currentSentences = shuffleArray([...baseSentences]);
+        
+        currentIdx = 0;
+        score = 0;
+        enableButtons(true);
+        nextQuestion();
+    }
+
+    function nextQuestion() {
+        if (currentIdx >= currentSentences.length) {
+            finishGame();
+            return;
+        }
+        document.getElementById('feedback').innerText = "Hör genau hin...";
+        document.getElementById('feedback').style.color = "var(--primary-color)";
+        document.getElementById('score').innerText = `Satz ${currentIdx + 1} / ${currentSentences.length}`;
+        playCurrent();
+    }
+
+    function playCurrent() {
+        if (isPlaying) return;
+        isPlaying = true;
+        const icon = document.getElementById('audio-trigger');
+        icon.classList.add('playing');
+
+        const utterance = new SpeechSynthesisUtterance(currentSentences[currentIdx].text);
+        if (maleRussianVoice) utterance.voice = maleRussianVoice;
+        utterance.lang = 'ru-RU';
+        utterance.rate = 0.8; 
+        utterance.pitch = 0.9; 
+
+        utterance.onend = () => {
+            isPlaying = false;
+            icon.classList.remove('playing');
+            document.getElementById('feedback').innerText = "Was hast du gehört?";
+        };
+
+        synth.speak(utterance);
+    }
+
+    function handleInput(choice) {
+        if (isPlaying || currentIdx >= currentSentences.length) return;
+
+        const correctCat = currentSentences[currentIdx].cat;
+        const feedback = document.getElementById('feedback');
+
+        if (choice === correctCat) {
+            feedback.innerText = "Richtig! ✓";
+            feedback.style.color = "var(--success-color)";
+            score++;
+        } else {
+            feedback.innerText = "Falsch! ✗";
+            feedback.style.color = "var(--error-color)";
+        }
+
+        currentIdx++;
+        setTimeout(nextQuestion, 1200);
+    }
+
+    function enableButtons(status) {
+        document.getElementById('btn-fakt').disabled = !status;
+        document.getElementById('btn-absicht').disabled = !status;
+    }
+
+    function finishGame() {
+        enableButtons(false);
+        document.getElementById('feedback').innerText = `Ergebnis: ${score} von ${currentSentences.length} richtig!`;
+        document.getElementById('feedback').style.color = "var(--secondary-color)";
+        
+        const table = document.getElementById('summary-table');
+        table.innerHTML = "";
+        currentSentences.forEach(s => {
+            let row = table.insertRow();
+            row.innerHTML = `<td><b>${s.cat === 'fakt' ? 'ЧТО' : 'ЧТОБЫ'}</b></td><td>${s.text}</td><td><small>${s.trans}</small></td>`;
+        });
+        document.getElementById('summary-block').style.display = 'block';
+    }
+
+    function resetGame() {
+        synth.cancel();
+        document.getElementById('start-screen').style.display = 'flex';
+        document.getElementById('summary-block').style.display = 'none';
+        document.getElementById('feedback').innerText = "Bereit?";
+        document.getElementById('score').innerText = "Satz 0 / 10";
+    }
+</script>
+
+</body>
+</html>
