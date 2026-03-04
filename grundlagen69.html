@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Russische Grammatik: ЧТО und ЧТОБЫ</title>
+    <script src="https://cdn.jsdelivr.net/npm/drag-drop-touch@1.3.1/DragDropTouch.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --error-color: #e74c3c;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+            color: var(--primary-color);
+        }
+
+        .explanation {
+            background: #eef6fc;
+            padding: 20px;
+            border-left: 5px solid var(--secondary-color);
+            border-radius: 4px;
+            margin-bottom: 40px;
+        }
+
+        .exercise-block {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+
+        .task {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .sentence {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        select {
+            padding: 6px 10px;
+            font-size: 1rem;
+            border: 2px solid #bdc3c7;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        select.correct {
+            border-color: var(--success-color);
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        select.incorrect {
+            border-color: var(--error-color);
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .btn-reset { background-color: #95a5a6; color: white; }
+        .btn-solution { background-color: #f39c12; color: white; }
+
+        @media (max-width: 600px) {
+            .container { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Russische Grammatik</h1>
+    <h2>Übung: ЧТО oder ЧТОБЫ?</h2>
+
+    <div class="explanation">
+        <h3>Regeln im Überblick</h3>
+        <p><strong>ЧТО</strong> wird für Fakten, Wissen und Informationen verwendet (entspricht meist „dass“ oder „was“).</p>
+        <p><strong>ЧТОБЫ</strong> wird für Ziele, Wünsche, Bitten und Forderungen verwendet (entspricht „damit“, „um zu“ oder „dass“ bei Wünschen).</p>
+    </div>
+
+    <!-- TEIL 1 -->
+    <div class="exercise-block">
+        <h3>Teil 1: Wahl der Konjunktion</h3>
+        <p>Wählen Sie die passende Konjunktion für den Fakten- oder Zielkontext.</p>
+        
+        <div class="task">
+            <div class="sentence">1. Я думаю, <select onchange="check(this, 'что')"><option value="">--?--</option><option value="что">что</option><option value="чтобы">чтобы</option></select> это хорошая идея.</div>
+            <div class="btn-group">
+                <button class="btn-reset" onclick="resetTask(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solve(this, 'что')">Lösung anzeigen</button>
+            </div>
+        </div>
+
+        <div class="task">
+            <div class="sentence">2. Мама хочет, <select onchange="check(this, 'чтобы')"><option value="">--?--</option><option value="что">что</option><option value="чтобы">чтобы</option></select> я купил молоко.</div>
+            <div class="btn-group">
+                <button class="btn-reset" onclick="resetTask(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solve(this, 'чтобы')">Lösung anzeigen</button>
+            </div>
+        </div>
+
+        <div class="task">
+            <div class="sentence">3. Мы здесь, <select onchange="check(this, 'чтобы')"><option value="">--?--</option><option value="что">что</option><option value="чтобы">чтобы</option></select> работать.</div>
+            <div class="btn-group">
+                <button class="btn-reset" onclick="resetTask(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solve(this, 'чтобы')">Lösung anzeigen</button>
+            </div>
+        </div>
+
+        <div class="task">
+            <div class="sentence">4. Он сказал, <select onchange="check(this, 'что')"><option value="">--?--</option><option value="что">что</option><option value="чтобы">чтобы</option></select> фильм уже начался.</div>
+            <div class="btn-group">
+                <button class="btn-reset" onclick="resetTask(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solve(this, 'что')">Lösung anzeigen</button>
+            </div>
+        </div>
+
+        <div class="task">
+            <div class="sentence">5. Попроси его, <select onchange="check(this, 'чтобы')"><option value="">--?--</option><option value="что">что</option><option value="чтобы">чтобы</option></select> он перезвонил.</div>
+            <div class="btn-group">
+                <button class="btn-reset" onclick="resetTask(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solve(this, 'чтобы')">Lösung anzeigen</button>
+            </div>
+        </div>
+
+        <div class="task">
+            <div class="sentence">6. Вы видели, <select onchange="check(this, 'что')"><option value="">--?--</option><option value="что">что</option><option value="чтобы">чтобы</option></select> он принес?</div>
+            <div class="btn-group">
+                <button class="btn-reset" onclick="resetTask(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solve(this, 'что')">Lösung anzeigen</button>
+            </div>
+        </div>
+
+        <div class="task">
+            <div class="sentence">7. Дай мне ключ, <select onchange="check(this, 'чтобы')"><option value="">--?--</option><option value="что">что</option><option value="чтобы">чтобы</option></select> открыть дверь.</div>
+            <div class="btn-group">
+                <button class="btn-reset" onclick="resetTask(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solve(this, 'чтобы')">Lösung anzeigen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TEIL 2 -->
+    <div class="exercise-block">
+        <h3>Teil 2: Verbformen nach ЧТОБЫ</h3>
+        <p>Wählen Sie die grammatikalisch korrekte Form (Infinitiv oder Präteritum).</p>
+
+        <div class="task">
+            <div class="sentence">8. Я хочу, чтобы ты мне <select onchange="check(this, 'помог')"><option value="">--?--</option><option value="помочь">помочь</option><option value="помог">помог</option></select>.</div>
+            <div class="btn-group">
+                <button class="btn-reset" onclick="resetTask(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solve(this, 'помог')">Lösung anzeigen</button>
+            </div>
+        </div>
+
+        <div class="task">
+            <div class="sentence">9. Он пошел в магазин, чтобы <select onchange="check(this, 'купить')"><option value="">--?--</option><option value="купить">купить</option><option value="купил">купил</option></select> хлеб.</div>
+            <div class="btn-group">
+                <button class="btn-reset" onclick="resetTask(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solve(this, 'купить')">Lösung anzeigen</button>
+            </div>
+        </div>
+
+        <div class="task">
+            <div class="sentence">10. Учитель просит, чтобы мы <select onchange="check(this, 'выучили')"><option value="">--?--</option><option value="выучить">выучить</option><option value="выучили">выучили</option></select> слова.</div>
+            <div class="btn-group">
+                <button class="btn-reset" onclick="resetTask(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solve(this, 'выучили')">Lösung anzeigen</button>
+            </div>
+        </div>
+
+        <div class="task">
+            <div class="sentence">11. Мы требовали, чтобы они <select onchange="check(this, 'не шумели')"><option value="">--?--</option><option value="не шуметь">не шуметь</option><option value="не шумели">не шумели</option></select>.</div>
+            <div class="btn-group">
+                <button class="btn-reset" onclick="resetTask(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solve(this, 'не шумели')">Lösung anzeigen</button>
+            </div>
+        </div>
+
+        <div class="task">
+            <div class="sentence">12. Мы приехали, чтобы <select onchange="check(this, 'посмотреть')"><option value="">--?--</option><option value="посмотреть">посмотреть</option><option value="посмотрели">посмотрели</option></select> город.</div>
+            <div class="btn-group">
+                <button class="btn-reset" onclick="resetTask(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solve(this, 'посмотреть')">Lösung anzeigen</button>
+            </div>
+        </div>
+
+        <div class="task">
+            <div class="sentence">13. Мама хочет, чтобы сестра <select onchange="check(this, 'пришла')"><option value="">--?--</option><option value="прийти">прийти</option><option value="пришла">пришла</option></select> вовремя.</div>
+            <div class="btn-group">
+                <button class="btn-reset" onclick="resetTask(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solve(this, 'пришла')">Lösung anzeigen</button>
+            </div>
+        </div>
+
+        <div class="task">
+            <div class="sentence">14. Я не хочу, чтобы ты <select onchange="check(this, 'ушел')"><option value="">--?--</option><option value="уйти">уйти</option><option value="ушел">ушел</option></select>.</div>
+            <div class="btn-group">
+                <button class="btn-reset" onclick="resetTask(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solve(this, 'ушел')">Lösung anzeigen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TEIL 3 -->
+    <div class="exercise-block">
+        <h3>Teil 3: Bedeutung erkennen</h3>
+        <p>Handelt es sich um eine neutrale Information (Fakt) oder um eine Absicht/Wunsch (Ziel)?</p>
+
+        <div class="task">
+            <div class="sentence">15. „Я слышал, что ты переехал.“ <select onchange="check(this, 'Fakt')"><option value="">--?--</option><option value="Fakt">Fakt</option><option value="Ziel">Ziel</option></select></div>
+            <div class="btn-group">
+                <button class="btn-reset" onclick="resetTask(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solve(this, 'Fakt')">Lösung anzeigen</button>
+            </div>
+        </div>
+
+        <div class="task">
+            <div class="sentence">16. „Я пришел, чтобы поговорить.“ <select onchange="check(this, 'Ziel')"><option value="">--?--</option><option value="Fakt">Fakt</option><option value="Ziel">Ziel</option></select></div>
+            <div class="btn-group">
+                <button class="btn-reset" onclick="resetTask(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solve(this, 'Ziel')">Lösung anzeigen</button>
+            </div>
+        </div>
+
+        <div class="task">
+            <div class="sentence">17. „Она мечтает, чтобы наступило лето.“ <select onchange="check(this, 'Ziel')"><option value="">--?--</option><option value="Fakt">Fakt</option><option value="Ziel">Ziel</option></select></div>
+            <div class="btn-group">
+                <button class="btn-reset" onclick="resetTask(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solve(this, 'Ziel')">Lösung anzeigen</button>
+            </div>
+        </div>
+
+        <div class="task">
+            <div class="sentence">18. „Хорошо, что сегодня солнце.“ <select onchange="check(this, 'Fakt')"><option value="">--?--</option><option value="Fakt">Fakt</option><option value="Ziel">Ziel</option></select></div>
+            <div class="btn-group">
+                <button class="btn-reset" onclick="resetTask(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solve(this, 'Fakt')">Lösung anzeigen</button>
+            </div>
+        </div>
+
+        <div class="task">
+            <div class="sentence">19. „Закрой окно, чтобы не было холодно.“ <select onchange="check(this, 'Ziel')"><option value="">--?--</option><option value="Fakt">Fakt</option><option value="Ziel">Ziel</option></select></div>
+            <div class="btn-group">
+                <button class="btn-reset" onclick="resetTask(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solve(this, 'Ziel')">Lösung anzeigen</button>
+            </div>
+        </div>
+
+        <div class="task">
+            <div class="sentence">20. „Она говорит, что устала.“ <select onchange="check(this, 'Fakt')"><option value="">--?--</option><option value="Fakt">Fakt</option><option value="Ziel">Ziel</option></select></div>
+            <div class="btn-group">
+                <button class="btn-reset" onclick="resetTask(this)">Zurücksetzen</button>
+                <button class="btn-solution" onclick="solve(this, 'Fakt')">Lösung anzeigen</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function check(select, correct) {
+        if (select.value === "") {
+            select.className = "";
+            return;
+        }
+        if (select.value === correct) {
+            select.className = "correct";
+        } else {
+            select.className = "incorrect";
+        }
+    }
+
+    function resetTask(btn) {
+        const select = btn.closest('.task').querySelector('select');
+        select.value = "";
+        select.className = "";
+    }
+
+    function solve(btn, correct) {
+        const select = btn.closest('.task').querySelector('select');
+        select.value = correct;
+        select.className = "correct";
+    }
+</script>
+
+</body>
+</html>
