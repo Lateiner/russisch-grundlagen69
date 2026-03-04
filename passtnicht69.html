@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odd One Out: 10 Gruppen</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --error-color: #e74c3c;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .explanation {
+            background: #eef6fc;
+            padding: 20px;
+            border-left: 5px solid var(--secondary-color);
+            border-radius: 4px;
+            margin-bottom: 30px;
+        }
+
+        .task-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .task-card h3 { margin-top: 0; font-size: 1.1rem; color: var(--secondary-color); }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .option {
+            padding: 12px 15px;
+            border: 2px solid #ecf0f1;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #fdfdfd;
+            font-size: 1rem;
+        }
+
+        .option:hover {
+            border-color: var(--secondary-color);
+            background: #f0f7fd;
+        }
+
+        .option.correct-pick {
+            border-color: var(--success-color);
+            background-color: #d4edda;
+            color: #155724;
+            font-weight: 500;
+        }
+
+        .option.wrong-pick {
+            border-color: var(--error-color);
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .option.disabled {
+            pointer-events: none;
+        }
+
+        .feedback-text {
+            margin-top: 15px;
+            font-weight: bold;
+            text-align: center;
+            min-height: 1.2em;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        button.action-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            transition: opacity 0.2s;
+        }
+
+        .btn-reset { background: #95a5a6; }
+        .btn-solution { background: #f39c12; }
+
+        @media (max-width: 600px) {
+            .container { padding: 15px; }
+            .option { font-size: 0.95rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Russische Grammatik</h1>
+    <h2>Aufgabe 8: „Das passt nicht“ (Odd One Out)</h2>
+    
+    <div class="explanation">
+        Finde den <b>logischen Ausreißer</b>! In jeder Gruppe verwenden drei Sätze <b>чтобы</b> korrekt (Wunsch/Ziel). Ein Satz verwendet es fälschlicherweise für einen Fakt (Information). 
+        <strong>Klicke auf den falschen Satz!</strong>
+    </div>
+
+    <div id="tasks-container"></div>
+</div>
+
+<script>
+    const taskData = [
+        {
+            options: [
+                { text: "Я пришёл, чтобы помочь тебе.", isOdd: false },
+                { text: "Я учусь, чтобы хорошо работать.", isOdd: false },
+                { text: "Я знаю, чтобы ты уже дома.", isOdd: true },
+                { text: "Дай нож, чтобы отрезать хлеб.", isOdd: false }
+            ],
+            expl: "Bei Wissen (знать) muss 'что' stehen."
+        },
+        {
+            options: [
+                { text: "Она хочет, чтобы я пришёл.", isOdd: false },
+                { text: "Нина думает, чтобы я прав.", isOdd: true },
+                { text: "Мама просит, чтобы ты купил хлеб.", isOdd: false },
+                { text: "Учитель хочет, чтобы мы учили слова.", isOdd: false }
+            ],
+            expl: "Bei Meinungen (думать) muss 'что' stehen."
+        },
+        {
+            options: [
+                { text: "Он сказал, чтобы я перезвонил.", isOdd: false },
+                { text: "Он видел, чтобы фильм начался.", isOdd: true },
+                { text: "Мы приехали, чтобы отдохнуть.", isOdd: false },
+                { text: "Закрой окно, чтобы не было холодно.", isOdd: false }
+            ],
+            expl: "Bei Wahrnehmung (видеть) muss 'что' stehen."
+        },
+        {
+            options: [
+                { text: "Нам кажется, чтобы будет дождь.", isOdd: true },
+                { text: "Я мечтаю, чтобы наступило лето.", isOdd: false },
+                { text: "Попроси соседа, чтобы er nicht шумел.", isOdd: false },
+                { text: "Я изучаю русский, чтобы понимать песни.", isOdd: false }
+            ],
+            expl: "Bei Vermutungen (кажется) muss 'что' stehen."
+        },
+        {
+            options: [
+                { text: "Мы требовали, чтобы нам помогли.", isOdd: false },
+                { text: "Папа хочет, чтобы дети хорошо учились.", isOdd: false },
+                { text: "Я слышал, чтобы ты переехал в Москву.", isOdd: true },
+                { text: "Я здесь, чтобы работать.", isOdd: false }
+            ],
+            expl: "Bei Informationen (слышать) muss 'что' stehen."
+        },
+        {
+            options: [
+                { text: "В новостях сказали, чтобы цены выросли.", isOdd: true },
+                { text: "Директор велел, чтобы все пришли к восьми.", isOdd: false },
+                { text: "Она надела пальто, чтобы не замерзнуть.", isOdd: false },
+                { text: "Я хочу, чтобы мир был прекрасен.", isOdd: false }
+            ],
+            expl: "Bei Nachrichten (сказали в новостях) muss 'что' stehen."
+        },
+        {
+            options: [
+                { text: "Я уверен, чтобы всё будет хорошо.", isOdd: true },
+                { text: "Мы здесь для того, чтобы учиться.", isOdd: false },
+                { text: "Антон просит, чтобы мы ему позвонили.", isOdd: false },
+                { text: "Она уехала, чтобы начать новую жизнь.", isOdd: false }
+            ],
+            expl: "Bei Gewissheit (уверен) muss 'что' stehen."
+        },
+        {
+            options: [
+                { text: "Ты помнишь, чтобы мы это обсуждали?", isOdd: true },
+                { text: "Я приклеил марку, чтобы отправить письмо.", isOdd: false },
+                { text: "Бабушка хочет, чтобы внуки приехали.", isOdd: false },
+                { text: "Они просили, чтобы мы не опаздывали.", isOdd: false }
+            ],
+            expl: "Bei Erinnerungen (помнить) muss 'что' stehen."
+        },
+        {
+            options: [
+                { text: "Врач посоветовал, чтобы я больше спал.", isOdd: false },
+                { text: "Я заметил, чтобы ты купил новую машину.", isOdd: true },
+                { text: "Мы включили свет, чтобы всё было видно.", isOdd: false },
+                { text: "Я молюсь, чтобы все были здоровы.", isOdd: false }
+            ],
+            expl: "Bei Beobachtungen (заметил) muss 'что' stehen."
+        },
+        {
+            options: [
+                { text: "Мы поняли, чтобы это была ошибка.", isOdd: true },
+                { text: "Она учит слова, чтобы сдать экзамен.", isOdd: false },
+                { text: "Я хочу, чтобы ты был счастлив.", isOdd: false },
+                { text: "Дай мне воды, чтобы я запил таблетку.", isOdd: false }
+            ],
+            expl: "Bei Erkenntnissen (понял) muss 'что' stehen."
+        }
+    ];
+
+    const container = document.getElementById('tasks-container');
+
+    taskData.forEach((data, tIdx) => {
+        const card = document.createElement('div');
+        card.className = 'task-card';
+        card.innerHTML = `<h3>Gruppe ${tIdx + 1}</h3><div class="options-grid"></div><div class="feedback-text"></div>`;
+        
+        const grid = card.querySelector('.options-grid');
+        const feedback = card.querySelector('.feedback-text');
+
+        data.options.forEach((opt, oIdx) => {
+            const div = document.createElement('div');
+            div.className = 'option';
+            div.innerText = opt.text;
+            div.onclick = () => {
+                if (opt.isOdd) {
+                    div.classList.add('correct-pick');
+                    feedback.innerText = "Richtig! " + data.expl;
+                    feedback.style.color = "var(--success-color)";
+                    grid.querySelectorAll('.option').forEach(o => o.classList.add('disabled'));
+                } else {
+                    div.classList.add('wrong-pick');
+                    feedback.innerText = "Falsch. Dieser Satz nutzt 'чтобы' korrekt.";
+                    feedback.style.color = "var(--error-color)";
+                    setTimeout(() => div.classList.remove('wrong-pick'), 1000);
+                }
+            };
+            grid.appendChild(div);
+        });
+
+        const btnGroup = document.createElement('div');
+        btnGroup.className = 'btn-group';
+        btnGroup.innerHTML = `
+            <button class="action-btn btn-reset" onclick="resetTask(${tIdx})">Reset</button>
+            <button class="action-btn btn-solution" onclick="solveTask(${tIdx})">Lösung</button>
+        `;
+        card.appendChild(btnGroup);
+        container.appendChild(card);
+    });
+
+    function resetTask(idx) {
+        const card = document.querySelectorAll('.task-card')[idx];
+        card.querySelectorAll('.option').forEach(o => o.classList.remove('correct-pick', 'wrong-pick', 'disabled'));
+        card.querySelector('.feedback-text').innerText = "";
+    }
+
+    function solveTask(idx) {
+        const card = document.querySelectorAll('.task-card')[idx];
+        const data = taskData[idx];
+        card.querySelectorAll('.option').forEach((o, i) => {
+            o.classList.add('disabled');
+            if (data.options[i].isOdd) o.classList.add('correct-pick');
+        });
+        card.querySelector('.feedback-text').innerText = "Lösung: " + data.expl;
+        card.querySelector('.feedback-text').style.color = "var(--primary-color)";
+    }
+</script>
+
+</body>
+</html>
