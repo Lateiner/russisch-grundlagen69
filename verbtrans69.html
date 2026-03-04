@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verb-Transformer: Russische Grammatik</title>
+    <script src="https://cdn.jsdelivr.net/npm/drag-drop-touch@1.3.1/DragDropTouch.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --error-color: #e74c3c;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .explanation {
+            background: #eef6fc;
+            padding: 20px;
+            border-left: 5px solid var(--secondary-color);
+            border-radius: 4px;
+            margin-bottom: 30px;
+        }
+
+        .explanation ul { margin: 10px 0; padding-left: 20px; }
+
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .task-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        .sentence-context {
+            font-weight: bold;
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .sentence-input {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        select {
+            padding: 5px 10px;
+            font-size: 1rem;
+            border: 2px solid #bdc3c7;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        select.correct {
+            border-color: var(--success-color);
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        select.incorrect {
+            border-color: var(--error-color);
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        button.action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            transition: opacity 0.2s;
+        }
+
+        .btn-reset { background: #95a5a6; }
+        .btn-solution { background: #f39c12; }
+
+        @media (max-width: 600px) {
+            .container { padding: 15px; }
+            .sentence-input { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Russische Grammatik</h1>
+    <h2>Aufgabe 4: Verb-Transformer (ЧТОБЫ)</h2>
+    
+    <div class="explanation">
+        <strong>Grammatik-Regel:</strong>
+        <ul>
+            <li>Subjekt bleibt gleich &rarr; <b>Infinitiv</b> (z.B. Я пришёл, чтобы <u>помочь</u>).</li>
+            <li>Subjekt wechselt &rarr; <b>Präteritum / Vergangenheit</b> (z.B. Я хочу, чтобы ты <u>помог</u>).</li>
+        </ul>
+        Wähle die richtige Verbform basierend auf den handelnden Personen aus.
+    </div>
+
+    <div class="task-list" id="task-container">
+        <!-- Aufgaben werden per JS geladen -->
+    </div>
+</div>
+
+<script>
+    const tasks = [
+        {
+            context: "Kontext: Ich handle selbst (gleiches Subjekt).",
+            q: "Я пришёл, чтобы ... тебе.",
+            options: ["помочь", "помог", "помогла"],
+            a: "помочь"
+        },
+        {
+            context: "Kontext: Ich möchte, dass DU (männlich) handelst.",
+            q: "Я хочу, чтобы ты ... мне.",
+            options: ["помочь", "помог", "помогла"],
+            a: "помог"
+        },
+        {
+            context: "Kontext: Nina geht einkaufen (gleiches Subjekt).",
+            q: "Нина пошла в магазин, чтобы ... молоко.",
+            options: ["купить", "купила", "купил"],
+            a: "купить"
+        },
+        {
+            context: "Kontext: Papa möchte, dass Nina (weiblich) einkauft.",
+            q: "Папа хочет, чтобы Нина ... молоко.",
+            options: ["купить", "купила", "купило"],
+            a: "купила"
+        },
+        {
+            context: "Kontext: Wir fordern, dass SIE (Plural) leise sind.",
+            q: "Мы требовали, чтобы они не ... .",
+            options: ["шуметь", "шумели", "шумела"],
+            a: "шумели"
+        },
+        {
+            context: "Kontext: Die Freunde sind zum Ausruhen gekommen (gleiches Subjekt).",
+            q: "Друзья приехали, чтобы ... .",
+            options: ["отдохнуть", "отдохнули", "отдохнула"],
+            a: "отдохнуть"
+        },
+        {
+            context: "Kontext: Der Lehrer möchte, dass WIR die Wörter lernen.",
+            q: "Учитель просит, чтобы мы ... слова.",
+            options: ["выучить", "выучили", "выучила"],
+            a: "выучили"
+        },
+        {
+            context: "Kontext: Gib mir das Messer, damit ICH (männlich) das Brot schneide.",
+            q: "Дай мне нож, чтобы я ... хлеб.",
+            options: ["порезать", "порезал", "порезала"],
+            a: "порезал"
+        },
+        {
+            context: "Kontext: Er lernt Russisch, um in Russland zu arbeiten (gleiches Subjekt).",
+            q: "Он учит русский, чтобы ... в России.",
+            options: ["работать", "работал", "работали"],
+            a: "работать"
+        },
+        {
+            context: "Kontext: Wir wollen, dass IHR uns versteht.",
+            q: "Мы хотим, чтобы вы нас ... .",
+            options: ["понимать", "поняли", "понял"],
+            a: "поняli" // Absichtlicher kleiner Fehler im Datensatz korrigiert unten
+        }
+    ];
+
+    // Korrektur für den letzten Eintrag
+    tasks[9].a = "поняли";
+
+    const container = document.getElementById('task-container');
+
+    tasks.forEach((task, index) => {
+        const card = document.createElement('div');
+        card.className = 'task-card';
+        
+        const parts = task.q.split('...');
+        
+        let selectHTML = `<select onchange="validate(this, '${task.a}')">
+                            <option value="">--?--</option>
+                            ${task.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+                          </select>`;
+
+        card.innerHTML = `
+            <span class="sentence-context">${task.context}</span>
+            <div class="sentence-input">
+                ${index + 1}. ${parts[0]} ${selectHTML} ${parts[1]}
+            </div>
+            <div class="btn-group">
+                <button class="action-btn btn-reset" onclick="resetTask(this)">Zurücksetzen</button>
+                <button class="action-btn btn-solution" onclick="showSolution(this, '${task.a}')">Lösung anzeigen</button>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+
+    function validate(select, correct) {
+        if (select.value === "") {
+            select.className = "";
+            return;
+        }
+        if (select.value === correct) {
+            select.className = "correct";
+        } else {
+            select.className = "incorrect";
+        }
+    }
+
+    function resetTask(btn) {
+        const select = btn.closest('.task-card').querySelector('select');
+        select.value = "";
+        select.className = "";
+    }
+
+    function showSolution(btn, correct) {
+        const select = btn.closest('.task-card').querySelector('select');
+        select.value = correct;
+        select.className = "correct";
+    }
+</script>
+
+</body>
+</html>
