@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dialog-Vervollständigung: ЧТО vs. ЧТОБЫ (4 Szenarien)</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --error-color: #e74c3c;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --chat-left: #e3f2fd;
+            --chat-right: #f1f8e9;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 850px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .explanation {
+            background: #eef6fc;
+            padding: 20px;
+            border-left: 5px solid var(--secondary-color);
+            border-radius: 4px;
+            margin-bottom: 30px;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            border-bottom: 2px solid #eee;
+            padding-bottom: 5px;
+            margin-top: 40px;
+        }
+
+        /* Chat Design */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .bubble {
+            max-width: 85%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            font-size: 1rem;
+            line-height: 1.5;
+            position: relative;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .bubble-left {
+            align-self: flex-start;
+            background-color: var(--chat-left);
+            border-bottom-left-radius: 2px;
+        }
+
+        .bubble-right {
+            align-self: flex-end;
+            background-color: var(--chat-right);
+            border-bottom-right-radius: 2px;
+            text-align: right;
+        }
+
+        .name {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-bottom: 4px;
+            color: #546e7a;
+            text-transform: uppercase;
+        }
+
+        /* Input Styling */
+        select {
+            padding: 3px 6px;
+            font-size: 1rem;
+            border: 2px solid #bdc3c7;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        select.correct {
+            border-color: var(--success-color);
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        select.incorrect {
+            border-color: var(--error-color);
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            position: sticky;
+            bottom: 20px;
+            margin-top: 40px;
+            background: rgba(244, 247, 246, 0.9);
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        button.action-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .btn-reset { background: #95a5a6; }
+        .btn-solution { background: #f39c12; }
+
+        @media (max-width: 600px) {
+            .container { padding: 15px; }
+            .bubble { max-width: 95%; font-size: 0.95rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Russische Grammatik</h1>
+    <h2>Aufgabe 10: Dialog-Vervollständigung</h2>
+    
+    <div class="explanation">
+        Lies die Nachrichtenverläufe. Wähle <b>что</b> für Fakten/Informationen und <b>чтобы</b> für Ziele, Wünsche oder Aufforderungen. Das Feedback erfolgt sofort!
+    </div>
+
+    <!-- DIALOG 1 -->
+    <h3>1. Schule & Pläne</h3>
+    <div class="chat-container">
+        <div class="bubble bubble-left">
+            <span class="name">Антон</span>
+            Привет! Ты слышал, <select class="ui" data-ans="что"><option value="">...</option><option value="что">что</option><option value="чтобы">чтобы</option></select> завтра будет тест?
+        </div>
+        <div class="bubble bubble-right">
+            <span class="name">Лена</span>
+            Да! Учитель хочет, <select class="ui" data-ans="чтобы"><option value="">...</option><option value="что">что</option><option value="чтобы">чтобы</option></select> мы выучили всё сегодня.
+        </div>
+        <div class="bubble bubble-left">
+            <span class="name">Антон</span>
+            Я позвоню Марку, <select class="ui" data-ans="чтобы"><option value="">...</option><option value="что">что</option><option value="чтобы">чтобы</option></select> он помог мне.
+        </div>
+    </div>
+
+    <!-- DIALOG 2 -->
+    <h3>2. In der Küche</h3>
+    <div class="chat-container">
+        <div class="bubble bubble-left">
+            <span class="name">Мама</span>
+            Максим, я вижу, <select class="ui" data-ans="что"><option value="">...</option><option value="что">что</option><option value="чтобы">чтобы</option></select> ты ещё не обедал.
+        </div>
+        <div class="bubble bubble-right">
+            <span class="name">Максим</span>
+            Я ждал, <select class="ui" data-ans="чтобы"><option value="">...</option><option value="что">что</option><option value="чтобы">чтобы</option></select> ты приготовила суп.
+        </div>
+        <div class="bubble bubble-left">
+            <span class="name">Мама</span>
+            Он готов. Попроси папу, <select class="ui" data-ans="чтобы"><option value="">...</option><option value="что">что</option><option value="чтобы">чтобы</option></select> он шёл на кухню.
+        </div>
+    </div>
+
+    <!-- DIALOG 3 -->
+    <h3>3. Reiseplanung</h3>
+    <div class="chat-container">
+        <div class="bubble bubble-right">
+            <span class="name">Виктор</span>
+            Ты знаешь, <select class="ui" data-ans="что"><option value="">...</option><option value="что">что</option><option value="чтобы">чтобы</option></select> Иван уехал в Италию?
+        </div>
+        <div class="bubble bubble-left">
+            <span class="name">Нина</span>
+            Да, он поехал туда, <select class="ui" data-ans="чтобы"><option value="">...</option><option value="что">что</option><option value="чтобы">чтобы</option></select> увидеть Рим.
+        </div>
+        <div class="bubble bubble-right">
+            <span class="name">Виктор</span>
+            Я мечтаю, <select class="ui" data-ans="чтобы"><option value="">...</option><option value="что">что</option><option value="чтобы">чтобы</option></select> мы тоже туда поехали.
+        </div>
+        <div class="bubble bubble-left">
+            <span class="name">Нина</span>
+            Но я слышала, <select class="ui" data-ans="что"><option value="">...</option><option value="что">что</option><option value="чтобы">чтобы</option></select> билеты сейчас очень дорогие.
+        </div>
+    </div>
+
+    <!-- DIALOG 4 -->
+    <h3>4. Gesundheit</h3>
+    <div class="chat-container">
+        <div class="bubble bubble-left">
+            <span class="name">Врач</span>
+            Мне кажется, <select class="ui" data-ans="что"><option value="">...</option><option value="что">что</option><option value="чтобы">чтобы</option></select> у вас высокая температура.
+        </div>
+        <div class="bubble bubble-right">
+            <span class="name">Пациент</span>
+            Да, я чувствую, <select class="ui" data-ans="что"><option value="">...</option><option value="что">что</option><option value="чтобы">чтобы</option></select> я заболел.
+        </div>
+        <div class="bubble bubble-left">
+            <span class="name">Врач</span>
+            Я советую, <select class="ui" data-ans="чтобы"><option value="">...</option><option value="что">что</option><option value="чтобы">чтобы</option></select> вы пили больше чая и спали.
+        </div>
+        <div class="bubble bubble-right">
+            <span class="name">Пациент</span>
+            Хорошо, я сделаю всё, <select class="ui" data-ans="чтобы"><option value="">...</option><option value="что">что</option><option value="чтобы">чтобы</option></select> быстро выздороветь.
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="action-btn btn-reset" onclick="resetAll()">Zurücksetzen</button>
+        <button class="action-btn btn-solution" onclick="solveAll()">Lösungen anzeigen</button>
+    </div>
+</div>
+
+<script>
+    const allSelects = document.querySelectorAll('.ui');
+
+    allSelects.forEach(select => {
+        select.addEventListener('change', function() {
+            const correct = this.getAttribute('data-ans');
+            if (this.value === "") {
+                this.className = "ui";
+            } else if (this.value === correct) {
+                this.className = "ui correct";
+            } else {
+                this.className = "ui incorrect";
+            }
+        });
+    });
+
+    function resetAll() {
+        allSelects.forEach(s => {
+            s.value = "";
+            s.className = "ui";
+        });
+    }
+
+    function solveAll() {
+        allSelects.forEach(s => {
+            s.value = s.getAttribute('data-ans');
+            s.className = "ui correct";
+        });
+    }
+</script>
+
+</body>
+</html>
